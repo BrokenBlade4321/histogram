@@ -1,7 +1,5 @@
 import plotly
 import plotly.graph_objs as go
-import pandas as pd
-import numpy as np
 import plotly.express as px
 from plotly.subplots import make_subplots
 
@@ -14,17 +12,37 @@ data = \
 'ДС Оптовая и розничная торговля, тыс. руб.': [19963824.0, 25665497.0, 36181429.0, 29250150.33, 31595939.083, 33712478.953, 32791813.99],
 'ДС Деятельность в области информатизации и связи, тыс. руб.': [6646511.0, 9461344.0, 10263705.0, 9450155.787, 10127289.203, 10359428.578, 10385280.659]}
 
-def find_year(delta, start_date=2017):
-    return [i + start_date for i in range(delta)]
 
+
+
+
+dates = [2017 + i for i in range(7)]
+
+
+# plotly start
 fig = go.Figure()
+for col in range(7):
+    fig.add_trace(go.Scatter(x=dates,
+                             visible=True,
+                             # name=col
+                             )
+                  )
+
+# menu setup
+updatemenu = []
+
+# buttons for menu 1, names
 buttons = []
-for df in data.keys():
+
+# create traces for each Room_number:
+for df,values in data.items():
     buttons.append(dict(method='update',
                         label=df,
                         visible=True,
-                        args=[{'y': data[df], 'x':find_year(7)}])
+                        args=[
+                            {'y': [data[df]]}])
                    )
+
 
 updatemenu = []
 your_menu = dict()
