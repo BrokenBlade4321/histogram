@@ -1,7 +1,4 @@
-import plotly
 import plotly.graph_objs as go
-import plotly.express as px
-from plotly.subplots import make_subplots
 
 data = \
     {'ВТП Казани, тыс. руб.': [674739900.0, 748722900.0, 773031100.0, 798154610.75, 824094635.6, 850877711.26,
@@ -22,23 +19,33 @@ data = \
 dates = [2017 + i for i in range(7)]
 
 # plotly start
-fig = go.Figure()
-for col in range(7):
-    fig.add_trace(go.Scatter(x=dates,
-                             visible=True))
+fig = go.Figure(data=[go.Bar(
+    visible=i==0,
+    name=otrasl[:-11],
+    x=dates,
+    y=data[otrasl],
+) for i, otrasl in enumerate(data)])
+
+# for col in range(7):
+#     fig.add_trace(go.Scatter(x=dates))
 # buttons for menu 1, names
-buttons = []
+buttons = [{'label': item,
+            'method': "update",
+            'args': [{"visible": [i == j for j in range(len(data))]},
+                     {"title": item[:-11]}]}
+           for i, item in enumerate(data.keys())
+           ]
 
 # create traces for each Room_number:
-for df, value in data.items():
-    buttons.append(dict(method='update',
-                        label=df,
-                        visible=True,
-                        args=[{'y': [value]}, {'visible':True}]
-                        ))
+# for df, value in data.items():
+#     buttons.append(dict(method='update',
+#                         label=df,
+#                         visible=[True],
+#                         args=[{'y': [value]}, {'visible': True}]
+#                         ))
 
-updatemenu = [{'buttons': buttons, 'direction': 'down', 'showactive': True, 'y':0.6}]
+updatemenu = [{'buttons': buttons, 'direction': 'down',
+               'showactive': True, 'x': 0.0, 'y': 1.1, 'xanchor': "left"}]
 
-fig.update_layout(showlegend=False, updatemenus=updatemenu)
+fig.update_layout(showlegend=False, updatemenus=updatemenu, )
 fig.write_html("sheet.html")
-
